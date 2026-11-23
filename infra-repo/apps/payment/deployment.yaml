@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: payment-deployment
+  name: payment-deploy
   labels:
-    app: payment-deployment
+    app: payment-deploy
 spec:
   replicas: 1
   strategy:
@@ -13,14 +13,14 @@ spec:
       maxUnavailable: 0
   selector:
     matchLabels:
-      app: payment
+      app: payment-app
   template:
     metadata:
       labels:
-        app: payment
+        app: payment-app
     spec:
       containers:
-        - name: payment-service
+        - name: payment-app
           image: minimarket/payment-service
           imagePullPolicy: Never
           ports:

@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: inventory-deployment
+  name: inventory-deploy
   labels:
-    app: inventory-deployment
+    app: inventory-deploy
 spec:
   replicas: 1
   strategy:
@@ -13,14 +13,14 @@ spec:
       maxUnavailable: 0
   selector:
     matchLabels:
-      app: inventory
+      app: inventory-app
   template:
     metadata:
       labels:
-        app: inventory
+        app: inventory-app
     spec:
       containers:
-        - name: inventory-service
+        - name: inventory-app
           image: minimarket/inventory-service
           imagePullPolicy: Never
           ports:

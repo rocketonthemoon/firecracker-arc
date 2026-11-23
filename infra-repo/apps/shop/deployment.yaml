@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shop-deployment
+  name: shop-deploy
   labels:
-    app: shop-deployment
+    app: shop-deploy
 spec:
   replicas: 1
   strategy:
@@ -13,23 +13,23 @@ spec:
       maxUnavailable: 0
   selector:
     matchLabels:
-      app: shop
+      app: shop-app
   template:
     metadata:
       labels:
-        app: shop
+        app: shop-app
     spec:
       containers:
-        - name: shop-service
+        - name: shop-app
           image: minimarket/shop-service
           imagePullPolicy: Never
           ports:
             - containerPort: 3000
           env:
             - name: INVENTORY_URL
-              value: "http://inventory-service"
+              value: "http://inventory-svc"
             - name: PAYMENT_URL
-              value: "http://payment-service"
+              value: "http://payment-svc"
           resources:
             requests:
               cpu: "50m"
