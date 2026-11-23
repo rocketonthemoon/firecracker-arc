@@ -1,0 +1,12 @@
+# Local test only: docker compose up --build  ->  http://localhost:3000
+services:
+  shop:
+    build: ./shop-service
+    ports: ["3000:3000"]
+    environment:
+      INVENTORY_URL: http://inventory:3001
+      PAYMENT_URL: http://payment:3002
+  inventory:
+    build: ./inventory-service
+  payment:
+    build: ./payment-service

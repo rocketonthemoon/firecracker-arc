@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard - Mini Market</title>
+  <link rel="stylesheet" href="/water.css">
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <header>
+    <nav>
+      <a class="brand" href="/">Mini Market</a>
+      <a href="/cart">Cart (<span id="cart-count">0</span>)</a>
+      <a href="/dashboard">Dashboard</a>
+    </nav>
+  </header>
+
+  <h1>Dashboard</h1>
+  <small class="muted">Refreshes every 5 seconds.</small>
+
+  <h2>Overview</h2>
+  <table>
+    <tbody>
+      <tr><th>Revenue</th><td id="revenue">-</td></tr>
+      <tr><th>Orders</th><td id="orders">-</td></tr>
+      <tr><th>Declined payments</th><td id="declined">-</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Services</h2>
+  <table><tbody id="services"></tbody></table>
+
+  <h2>Stock</h2>
+  <table>
+    <thead><tr><th>Product</th><th>Stock</th><th></th></tr></thead>
+    <tbody id="stock"></tbody>
+  </table>
+
+  <h2>Recent payments</h2>
+  <table>
+    <thead><tr><th>Time</th><th>Amount</th><th>Card</th><th>ID</th></tr></thead>
+    <tbody id="payments"></tbody>
+  </table>
+
+  <script src="/common.js"></script>
+  <script src="/dashboard.js"></script>
+</body>
+</html>

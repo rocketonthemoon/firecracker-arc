@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: sandbox-lockdown
+  namespace: katatest
+spec:
+  podSelector:
+    matchLabels:
+      sandbox: "true" # applies to pods with this label
+  policyTypes: [Ingress, Egress]
+  ingress: [] # nothing may connect in
+  egress:
+    - to: # DNS via CoreDNS
+        - namespaceSelector: {}
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - { protocol: UDP, port: 53 }
+        - { protocol: TCP, port: 53 }
+    - to: # internet, but not private/cluster/metadata ranges
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+              - 10.0.0.0/8 # includes k3s pod (10.42/16) + service (10.43/16) ranges
+              - 172.16.0.0/12 # WSL / Docker networks
+              - 192.168.0.0/16 # your LAN
+              - 169.254.0.0/16 # link-local + cloud metadata (169.254.169.254)
+              - 100.64.0.0/10

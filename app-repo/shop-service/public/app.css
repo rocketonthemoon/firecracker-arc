@@ -1,0 +1,23 @@
+/* Small additions on top of water.css */
+header nav { display: flex; gap: 1rem; align-items: baseline; }
+header nav .brand { font-weight: bold; margin-right: auto; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+.card { display: block; padding: 1rem; border-radius: 6px; background: var(--background-alt); color: inherit; text-decoration: none; }
+.card:hover { background: var(--background); text-decoration: none; }
+.card h3 { margin: .25rem 0; }
+.card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 4px; }
+
+.product { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; align-items: start; }
+.product img { width: 100%; border-radius: 6px; }
+img.thumb { width: 64px; border-radius: 4px; display: block; }
+
+.price { font-size: 1.3rem; font-weight: bold; }
+.muted { color: var(--text-muted); }
+.low { color: #d97706; }
+.out { color: #dc2626; }
+.ok { color: #16a34a; }
+
+.row { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+input.qty { width: 5rem; }
+.total { font-size: 1.3rem; text-align: right; }
