@@ -30,7 +30,7 @@ kubectl get pods -A                                               # all Running/
 Firecracker only accepts block devices → containers need devmapper instead of overlayfs.
 
 ```bash
-SRC=/mnt/c/Users/Vartotojas/Desktop/Playground-beta/firecracker/k3s
+SRC=firecracker-cicd/k3s
 
 install -m 755 $SRC/devmapper-pool.sh /usr/local/bin/              # creates/re-attaches the pool
 install -m 644 $SRC/devmapper-pool.service /etc/systemd/system/    # runs it before k3s on boot
@@ -45,7 +45,7 @@ k3s ctr plugins ls | grep devmapper     # must say "ok"
 dmsetup status devpool                  # pool usage
 ```
 
-## 4. Kata (kata-fc)
+## 4. Kata (kata-fc) - Installing the official helm chart
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash   # install helm

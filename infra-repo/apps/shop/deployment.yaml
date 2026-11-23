@@ -30,3 +30,10 @@ spec:
               value: "http://inventory-service"
             - name: PAYMENT_URL
               value: "http://payment-service"
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64mb"
+            limits:
+              cpu: "500m"
+              memory: "256mb"
