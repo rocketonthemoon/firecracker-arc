@@ -4,7 +4,7 @@ metadata:
   name: shop-svc
 spec:
   selector:
-    app: shop
+    app: shop-app
   ports:
     - protocol: TCP
       port: 80

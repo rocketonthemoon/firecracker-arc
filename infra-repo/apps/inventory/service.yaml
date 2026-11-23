@@ -4,7 +4,7 @@ metadata:
   name: inventory-svc
 spec:
   selector:
-    app: inventory
+    app: inventory-app
   ports:
     - protocol: TCP
       port: 80

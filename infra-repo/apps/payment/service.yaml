@@ -4,7 +4,7 @@ metadata:
   name: payment-svc
 spec:
   selector:
-    app: payment
+    app: payment-app
   ports:
     - protocol: TCP
       port: 80
