@@ -1,4 +1,4 @@
-# firecracker-cicd
+# firecracker-arc
 
 Self-hosted GitHub Actions where each job runs in its own Firecracker microVM, builds the app images, and pushes them to GHCR.
 
