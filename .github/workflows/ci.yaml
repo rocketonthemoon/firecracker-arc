@@ -1,0 +1,13 @@
+name: firecracker-runner-test
+on: workflow_dispatch
+
+permissions:
+  contents: read            # least privilege for the job's GITHUB_TOKEN
+
+jobs:
+  test:
+    runs-on: arc-runner
+    timeout-minutes: 15     # don't hang forever if the VM never boots
+    steps:
+      - run: uname -r && (grep -m1 -o hypervisor /proc/cpuinfo || echo "no hypervisor flag")
+      - run: docker version
