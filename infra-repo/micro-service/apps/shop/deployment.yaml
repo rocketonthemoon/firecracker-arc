@@ -21,8 +21,8 @@ spec:
     spec:
       containers:
         - name: shop-app
-          image: minimarket/shop-service
-          imagePullPolicy: Never
+          image: ghcr.io/rocketonthemoon/shop-service:64de47a
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000
           env:

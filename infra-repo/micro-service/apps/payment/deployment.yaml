@@ -21,8 +21,8 @@ spec:
     spec:
       containers:
         - name: payment-app
-          image: minimarket/payment-service
-          imagePullPolicy: Never
+          image: ghcr.io/rocketonthemoon/payment-service:64de47a
+          imagePullPolicy: Always
           ports:
             - containerPort: 3002
           resources:

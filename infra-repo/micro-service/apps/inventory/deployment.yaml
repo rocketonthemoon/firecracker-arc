@@ -21,8 +21,8 @@ spec:
     spec:
       containers:
         - name: inventory-app
-          image: minimarket/inventory-service
-          imagePullPolicy: Never
+          image: ghcr.io/rocketonthemoon/inventory-service:64de47a
+          imagePullPolicy: Always
           ports:
             - containerPort: 3001
           resources:
