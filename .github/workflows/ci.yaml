@@ -1,13 +1,67 @@
-name: firecracker-runner-test
-on: workflow_dispatch
+name: build-and-push
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app-repo/**"
+      - ".github/workflows/ci.yaml"
+  workflow_dispatch:
 
 permissions:
-  contents: read            # least privilege for the job's GITHUB_TOKEN
+  contents: read      # checkout
+  packages: write     # push images to ghcr.io with GITHUB_TOKEN
+
+env:
+  REGISTRY: ghcr.io
+  OWNER: ${{ github.repository_owner }}   # rocketonthemoon
+  SERVICES: "shop-service inventory-service payment-service"
 
 jobs:
-  test:
-    runs-on: arc-runner
-    timeout-minutes: 15     # don't hang forever if the VM never boots
+  build:
+    runs-on: arc-runner          # ARC runner inside a Firecracker microVM (Kata kata-fc)
+    timeout-minutes: 30
     steps:
-      - run: uname -r && (grep -m1 -o hypervisor /proc/cpuinfo || echo "no hypervisor flag")
-      - run: docker version
+      - uses: actions/checkout@v4
+
+      - name: verify microVM
+        run: uname -r && (grep -m1 -o hypervisor /proc/cpuinfo || echo "no hypervisor flag")
+
+      # No Docker daemon in the microVM (dind disabled), so build with Buildah:
+      #   --storage-driver vfs   plain directories, no overlay mounts needed
+      #   --isolation chroot     no runc/namespaces needed
+      # Works because the Dockerfiles have no RUN steps. If you add RUN steps,
+      # the runner container will need `privileged: true` (still confined to the VM).
+      - name: Install Buildah
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq buildah
+          buildah --version
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | sudo buildah login -u "${{ github.actor }}" --password-stdin "$REGISTRY"
+
+      - name: Build and push images
+        run: |
+          set -euo pipefail
+          for svc in $SERVICES; do
+            IMAGE="$REGISTRY/$OWNER/$svc:$GITHUB_SHA"   # tag = full commit hash, no :latest
+            echo "::group::$svc -> $IMAGE"
+            sudo buildah --storage-driver vfs build \
+              --isolation chroot \
+              --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}" \
+              --label "org.opencontainers.image.revision=$GITHUB_SHA" \
+              -t "$IMAGE" \
+              -f "app-repo/$svc/Dockerfile" "app-repo/$svc"
+            sudo buildah --storage-driver vfs push "$IMAGE"
+            echo "::endgroup::"
+          done
+
+      - name: Summary
+        run: |
+          {
+            echo "### Images pushed"
+            for svc in $SERVICES; do
+              echo "- \`$REGISTRY/$OWNER/$svc:$GITHUB_SHA\`"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"

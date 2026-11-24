@@ -5,13 +5,30 @@ githubConfigUrl: "https://github.com/rocketonthemoon/firecracker-cicd"
 githubConfigSecret: github-pat     # name of the Secret in the arc-runner namespace
 
 minRunners: 0
-maxRunners: 3
+maxRunners: 1
 
-# dind = Docker sidecar so workflows can run `docker build`.
-# Safe-ish here because the whole pod is sealed inside a microVM.
-containerMode:
-  type: "dind"
+# dind disabled for now: its init container (init-dind-externals) copies ~300MB
+# of runner files into an emptyDir, which runs out of space inside the
+# Firecracker VM and fails with exit 1. Without dind the runner starts directly.
+# No Docker in jobs -> build images with Kaniko/BuildKit later.
+# containerMode:
+#   type: "dind"
 
 template:
   spec:
     runtimeClassName: kata-fc      # Kata + Firecracker; must exist: kubectl get runtimeclass
+    containers:
+      - name: runner
+        image: ghcr.io/actions/actions-runner:latest
+        command: ["/home/runner/run.sh"]
+        # Kata sizes the microVM as default_memory (256Mi) + pod limits.
+        # With Firecracker, emptyDir volumes (runner externals, work dir) live
+        # in VM memory, so without a limit the VM is too small and the init
+        # container fails with "No space left on device".
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            cpu: "2"
+            memory: "2Gi"
