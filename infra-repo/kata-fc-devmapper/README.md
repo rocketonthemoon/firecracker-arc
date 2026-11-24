@@ -30,7 +30,7 @@ kubectl get pods -A                                               # all Running/
 Firecracker only accepts block devices → containers need devmapper instead of overlayfs.
 
 ```bash
-SRC=firecracker-cicd/k3s
+SRC=infra-repo/kata-fc-devmapper
 
 install -m 755 $SRC/devmapper-pool.sh /usr/local/bin/              # creates/re-attaches the pool
 install -m 644 $SRC/devmapper-pool.service /etc/systemd/system/    # runs it before k3s on boot
@@ -79,17 +79,6 @@ kubectl delete pod fc-test
 ```bash
 helm uninstall kata-deploy -n kube-system   # removes Kata, restores containerd config
 ```
-
-## Errors
-
-| Error | Fix |
-|---|---|
-| `ctr: ... no unpack platforms defined` | Add `--local` to `k3s ctr images pull` |
-| `helm install` → `timed out waiting for the condition` | Image still downloading → `--timeout 20m` |
-| `cannot re-use a name that is still in use` | `helm uninstall kata-deploy -n kube-system` |
-| Kata missing after reinstall, old jobs `Completed` | `kubectl -n kube-system delete job kata-deploy-install-dispatcher kata-deploy-install-<node>`, reinstall |
-| `Failed to watch ... unable to handle the request` | k3s restarting during install → ignore |
-| Firecracker runs as `Uid: 0` | Kata default (still chroot + seccomp) |
 
 ## Notes
 
