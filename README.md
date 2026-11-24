@@ -43,7 +43,7 @@ sequenceDiagram
 - **Kata Containers + Firecracker** → RuntimeClass `kata-fc`
 - **ARC** (Actions Runner Controller) → one ephemeral runner pod per job
 - **Buildah** → builds without a Docker daemon
-- **GHCR** → images tagged with the full commit SHA, pushed with `GITHUB_TOKEN` (`packages: write`)
+- **GHCR** → images tagged with the short commit SHA (7 chars), pushed with `GITHUB_TOKEN` (`packages: write`)
 
 ## Setup
 

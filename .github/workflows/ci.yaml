@@ -45,7 +45,7 @@ jobs:
         run: |
           set -euo pipefail
           for svc in $SERVICES; do
-            IMAGE="$REGISTRY/$OWNER/$svc:$GITHUB_SHA"   # tag = full commit hash, no :latest
+            IMAGE="$REGISTRY/$OWNER/$svc:${GITHUB_SHA::7}"   # tag = short commit hash (7 chars), no :latest
             echo "::group::$svc -> $IMAGE"
             sudo buildah --storage-driver vfs build \
               --isolation chroot \
@@ -62,6 +62,6 @@ jobs:
           {
             echo "### Images pushed"
             for svc in $SERVICES; do
-              echo "- \`$REGISTRY/$OWNER/$svc:$GITHUB_SHA\`"
+              echo "- \`$REGISTRY/$OWNER/$svc:${GITHUB_SHA::7}\`"
             done
           } >> "$GITHUB_STEP_SUMMARY"
