@@ -1,0 +1,10 @@
+# containerd (config v3) drop-in, loaded by k3s via config-v3.toml.d/*.toml
+[plugins.'io.containerd.snapshotter.v1.devmapper']
+  # the thin pool created by devmapper-pool.sh (/dev/mapper/devpool)
+  pool_name = "devpool"
+  # where containerd keeps its own metadata DB for this snapshotter
+  root_path = "/var/lib/rancher/k3s/agent/containerd/io.containerd.snapshotter.v1.devmapper"
+  # virtual size of each container's root disk (thin: only written blocks use space)
+  base_image_size = "10GB"
+  # when files are deleted inside a container, give the space back to the pool
+  discard_blocks = true

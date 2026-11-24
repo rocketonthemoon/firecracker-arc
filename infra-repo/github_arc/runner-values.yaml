@@ -1,0 +1,17 @@
+# Values for the gha-runner-scale-set chart (the runner set).
+# Every runner pod runs inside its own Firecracker microVM via Kata Containers.
+
+githubConfigUrl: "https://github.com/rocketonthemoon/firecracker-cicd"
+githubConfigSecret: github-pat     # name of the Secret in the arc-runner namespace
+
+minRunners: 0
+maxRunners: 3
+
+# dind = Docker sidecar so workflows can run `docker build`.
+# Safe-ish here because the whole pod is sealed inside a microVM.
+containerMode:
+  type: "dind"
+
+template:
+  spec:
+    runtimeClassName: kata-fc      # Kata + Firecracker; must exist: kubectl get runtimeclass

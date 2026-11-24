@@ -1,0 +1,41 @@
+# kata-deploy Helm values: Firecracker only, on k3s, using our devmapper thin pool.
+# Based on the official try-kata-fc.values.yaml profile from the Kata release.
+
+# Tell kata-deploy this is k3s, so it edits k3s's containerd config
+# (/var/lib/rancher/k3s/...) and restarts the k3s unit, not a stock containerd.
+# NOTE: check where this key lives in your chart version with:
+#   helm show values "$CHART" --version "$VERSION" | grep -n k8sDistribution
+# If it is nested (e.g. under "containerd:"), move it there.
+k8sDistribution: k3s
+
+# We set up devmapper ourselves (devmapper-pool.sh), so kata-deploy must not.
+snapshotter:
+  setup: []
+
+shims:
+  # Turn off every other hypervisor (qemu, clh, dragonball, ...): Firecracker only.
+  disableAll: true
+  fc:
+    enabled: true
+    supportedArches:
+      - amd64
+    # Pods may not override hypervisor settings through annotations (safer).
+    allowedHypervisorAnnotations: []
+    containerd:
+      # Firecracker needs block devices -> use our thin pool.
+      snapshotter: "devmapper"
+    # Extra Kata config, written as config.d/50-user-overrides.toml for this shim.
+    # Base VM memory (MiB) before the pod's own memory limit is added.
+    # Default is much larger; 256 fits a 4 GB WSL.
+    dropIn: |
+      [hypervisor.firecracker]
+      default_memory = 256
+
+# Pods that use the generic "kata" class get Firecracker.
+defaultShim:
+  amd64: fc
+
+runtimeClasses:
+  enabled: true        # creates RuntimeClass "kata-fc"
+  createDefault: false # don't also create a generic "kata" class
+  defaultName: "kata"

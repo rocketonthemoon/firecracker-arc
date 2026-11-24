@@ -1,0 +1,15 @@
+[Unit]
+Description=Device-mapper thin pool for containerd devmapper snapshotter
+# Must exist before k3s starts containerd, or the devmapper plugin fails to load.
+Before=k3s.service
+DefaultDependencies=no
+After=local-fs.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/bin/devmapper-pool.sh
+
+[Install]
+WantedBy=multi-user.target
+RequiredBy=k3s.service
